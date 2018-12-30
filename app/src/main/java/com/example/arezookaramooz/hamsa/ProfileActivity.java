@@ -30,36 +30,21 @@ public class ProfileActivity extends AppCompatActivity {
         String[] lines = input.split("\\r?\\n");
 
         numberOfOnlineUsers = Integer.parseInt(lines[0]);
-
         indexOfNumberOfPosts = numberOfOnlineUsers * 3 + 1;
         numberOfPosts = Integer.parseInt(lines[indexOfNumberOfPosts]);
-
         indexOfUserName = numberOfOnlineUsers * 3 + 1 + numberOfPosts + 1;
+        userName = lines[indexOfUserName];
         startIndexOfPosts = indexOfNumberOfPosts + 1;
         endIndexOfPosts = startIndexOfPosts + numberOfPosts-1;
 
-//        Log.d("ProfileActivity", "lines[o] is: " + lines[0]);
-//        Log.d("ProfileActivity", "number of online users is: " + numberOfOnlineUsers);
-//        Log.d("PhotosActivity", "index of username is" + indexOfUserName);
-        userName = lines[indexOfUserName];
-
-//        Log.d("PhotosActivity", "user name is: " + userName);
         String[] followers = findFollowers(lines, userName);
-//        Log.d("PhotosActivity", "number of followers is: " + followers.length );
-//        Log.d("PhotosActivity", "follower is: " + followers[0] );
         String[] sortedPosts = sortPostsByTimestamp(getPosts(lines));
-//        Log.d("PhotosActivity", "sorted post0 is: " + sortedPosts[0] );
-//        Log.d("PhotosActivity", "sorted post1 is: " + sortedPosts[1] );
-//        Log.d("PhotosActivity", "sorted post2 is: " + sortedPosts[2] );
-//        Log.d("PhotosActivity", "sorted post3 is: " + sortedPosts[3] );
-//        Log.d("PhotosActivity", "sorted post4 is: " + sortedPosts[4] );
 
         LinearLayout linearLayout = findViewById(R.id.ll);
 
         for (int i = 0; i < sortedPosts.length; i++) {
             String[] splitedPost = sortedPosts[i].split("\\r?\\s");
             if (splitedPost[2].equals("true")){
-//                Log.d("PhotosActivity", "yes: " + splitedPost[0]);
                 TextView t = new TextView(ProfileActivity.this);
                 t.setText(sortedPosts[i].replace("true", ""));
                 linearLayout.addView(t);
@@ -88,11 +73,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private String[] getPosts(String[] lines) {
-//        Log.d("PhotosActivity", "number of posts is " + numberOfPosts);
         String[] posts = new String[numberOfPosts];
         int j = 0;
-//        Log.d("PhotosActivity", " start index is " + startIndexOfPosts);
-//        Log.d("PhotosActivity", " end index is " + endIndexOfPosts);
         for (int i = startIndexOfPosts; i <= endIndexOfPosts; i++) {
             posts[j] = lines[i];
             j++;
@@ -102,12 +84,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private String[] sortPostsByTimestamp(String[] posts) {
         String temp;
-//        Log.d("PhotosActivity", "posts0 are: " + posts[0]);
-//        Log.d("PhotosActivity", "posts1 are: " + posts[1]);
-//        Log.d("PhotosActivity", "posts2 are: " + posts[2]);
-//        Log.d("PhotosActivity", "posts3 are: " + posts[3]);
-//        Log.d("PhotosActivity", "posts4 are: " + posts[4]);
-//        Log.d("PhotosActivity", "number of posts is: " + posts.length);
         for (int i = 1; i < posts.length; i++) {
             for (int j = i; j > 0; j--) {
                 String[] splitedPostj = posts[j].split("\\s");
