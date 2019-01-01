@@ -1,12 +1,16 @@
 package com.example.arezookaramooz.hamsa;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -25,40 +29,54 @@ public class ProfileActivity extends AppCompatActivity {
 
         Intent myIntent = getIntent();
         String input = myIntent.getStringExtra("inputString");
-        Log.d("ProfileActivity", "input is: "  + input);
 
-        String[] lines = input.split("\\r?\\n");
 
-        numberOfOnlineUsers = Integer.parseInt(lines[0]);
-        indexOfNumberOfPosts = numberOfOnlineUsers * 3 + 1;
-        numberOfPosts = Integer.parseInt(lines[indexOfNumberOfPosts]);
-        indexOfUserName = numberOfOnlineUsers * 3 + 1 + numberOfPosts + 1;
-        userName = lines[indexOfUserName];
-        startIndexOfPosts = indexOfNumberOfPosts + 1;
-        endIndexOfPosts = startIndexOfPosts + numberOfPosts-1;
 
-        String[] followers = findFollowers(lines, userName);
-        String[] sortedPosts = sortPostsByTimestamp(getPosts(lines));
+        try {
+            String[] lines = input.split("\\r?\\n");
+            numberOfOnlineUsers = Integer.parseInt(lines[0]);
+            indexOfNumberOfPosts = numberOfOnlineUsers * 3 + 1;
+            numberOfPosts = Integer.parseInt(lines[indexOfNumberOfPosts]);
+            indexOfUserName = numberOfOnlineUsers * 3 + 1 + numberOfPosts + 1;
+            userName = lines[indexOfUserName];
+            startIndexOfPosts = indexOfNumberOfPosts + 1;
+            endIndexOfPosts = startIndexOfPosts + numberOfPosts-1;
+            String[] followers = findFollowers(lines, userName);
+            String[] sortedPosts = sortPostsByTimestamp(getPosts(lines));
 
-        LinearLayout linearLayout = findViewById(R.id.ll);
+            LinearLayout linearLayout = findViewById(R.id.ll);
 
-        for (int i = 0; i < sortedPosts.length; i++) {
-            String[] splitedPost = sortedPosts[i].split("\\r?\\s");
-            if (splitedPost[2].equals("true")){
-                TextView t = new TextView(ProfileActivity.this);
-                t.setText(sortedPosts[i].replace("true", ""));
-                linearLayout.addView(t);
-            } else {
-                Log.d("PhotosActivity", "no " + splitedPost[0] );
-                for (int j = 0 ; j < followers.length ; j++){
-                    if (followers[j].equals(splitedPost[0]) || splitedPost[0].equals(userName)){
-                        TextView t = new TextView(ProfileActivity.this);
-                        t.setText(sortedPosts[i].replace("false", ""));
-                        linearLayout.addView(t);
+            for (int i = 0; i < sortedPosts.length; i++) {
+                String[] splitedPost = sortedPosts[i].split("\\r?\\s");
+                if (splitedPost[2].equals("true")){
+                    TextView t = new TextView(ProfileActivity.this);
+                    t.setText(sortedPosts[i].replace("true", ""));
+                    linearLayout.addView(t);
+                } else {
+                    Log.d("PhotosActivity", "no " + splitedPost[0] );
+                    for (int j = 0 ; j < followers.length ; j++){
+                        if (followers[j].equals(splitedPost[0]) || splitedPost[0].equals(userName)){
+                            TextView t = new TextView(ProfileActivity.this);
+                            t.setText(sortedPosts[i].replace("false", ""));
+                            linearLayout.addView(t);
+                        }
                     }
                 }
-            }
 
+            }
+        }catch (Exception e){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("wrong input format")
+                    .setMessage("Please enter the input in right format")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            finish();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
         }
     }
 
