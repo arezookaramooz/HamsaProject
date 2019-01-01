@@ -30,10 +30,9 @@ public class ProfileActivity extends AppCompatActivity {
         Intent myIntent = getIntent();
         String input = myIntent.getStringExtra("inputString");
 
-
-
         try {
             String[] lines = input.split("\\r?\\n");
+
             numberOfOnlineUsers = Integer.parseInt(lines[0]);
             indexOfNumberOfPosts = numberOfOnlineUsers * 3 + 1;
             numberOfPosts = Integer.parseInt(lines[indexOfNumberOfPosts]);
@@ -41,6 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
             userName = lines[indexOfUserName];
             startIndexOfPosts = indexOfNumberOfPosts + 1;
             endIndexOfPosts = startIndexOfPosts + numberOfPosts-1;
+
             String[] followers = findFollowers(lines, userName);
             String[] sortedPosts = sortPostsByTimestamp(getPosts(lines));
 
